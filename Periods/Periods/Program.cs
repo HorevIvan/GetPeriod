@@ -52,8 +52,6 @@ namespace Periods
 
             var periodLendth = 0;
 
-            var maxPeriodLendth = 0;
-
             var periodStartIndex = -1;
 
             var periodEndIndex = -1;
@@ -91,7 +89,7 @@ namespace Periods
                     {
                         periodLendth = digitIndexes1[remainder] - digitIndexes2[remainder];
 
-                        if (decimalLength > maxPeriodLendth)
+                        if (decimalLength > periodLendth)
                         {
                             var equal = true;
 
