@@ -18,10 +18,10 @@ namespace Periods
             test(1, 81);
             test(22, 7);
             test(1, 17);
-            test(1, 19);
-            test(1, 23);
-            test(1, 29);
-            test(1, 97);
+            test(1, 19); //???
+            test(1, 23); //???
+            test(1, 29); //???
+            test(1, 97); //???
             test(1, 970); //!!!
 
             Console.ReadLine();
