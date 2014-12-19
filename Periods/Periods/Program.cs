@@ -14,7 +14,7 @@ namespace Periods
             test(1, 9);
             test(1, 3);
             test(9, 110);
-            test(7, 12);
+            test(7, 12); //!!!
             test(1, 81);
             test(22, 7);
             test(1, 17);
@@ -36,7 +36,7 @@ namespace Periods
             Console.WriteLine();
         }
 
-        static String getPeriod(Int32 dividend, Int32 divisor, Int16 maxLength = 7)
+        static String getPeriod(Int32 dividend, Int32 divisor, Int16 maxLength = 200)
         {
             var length = maxLength;
 
