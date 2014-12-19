@@ -19,8 +19,10 @@ namespace Periods
             test(22, 7);
             test(1, 17);
             test(1, 19);
+            test(1, 23);
             test(1, 29);
             test(1, 97);
+            test(1, 970); //!!!
 
             Console.ReadLine();
         }
@@ -29,7 +31,7 @@ namespace Periods
         {
             Console.WriteLine(dividend + "/" + divisor + "=" + (Double)dividend / divisor);
 
-            Console.WriteLine(dividend + "/" + divisor + "=" + getPeriod(dividend, divisor, 100));
+            Console.WriteLine(dividend + "/" + divisor + "=" + getPeriod(dividend, divisor, 200));
 
             Console.WriteLine();
         }
@@ -49,8 +51,6 @@ namespace Periods
             var digitIndexes1 = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
             var digitIndexes2 = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-
-            var periodLendth = 0;
 
             var periodStartIndex = -1;
 
@@ -84,13 +84,28 @@ namespace Periods
 
                     decimals[decimalLength] = remainder;
 
-                    if (digitIndexes1[remainder] >= 0 && 
+                    if (digitIndexes1[remainder] >= 0 &&
                         digitIndexes2[remainder] >= 0)
                     {
-                        periodLendth = digitIndexes1[remainder] - digitIndexes2[remainder];
+                        var periodLendth = -1;
 
-                        if (decimalLength > periodLendth)
+                        while (decimalLength / 2 > periodLendth)
                         {
+                            if (periodLendth < 0)
+                            {
+                                periodLendth = digitIndexes1[remainder] - digitIndexes2[remainder];
+                            }
+                            else
+                            {
+                                while (periodLendth < decimalLength / 2)
+                                {
+                                    if (decimals[periodLendth++] == remainder)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+
                             var equal = true;
 
                             for (var index = 0; index < periodLendth && equal; index++)
