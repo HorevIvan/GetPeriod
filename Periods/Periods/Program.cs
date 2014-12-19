@@ -28,27 +28,56 @@ namespace Periods
             Debug.WriteLine(dividend + "/" + divisor + "=" + (Double)dividend / divisor);
             Debug.Write(dividend + "/" + divisor + "=");
 
-            while (maxDecimalPartLength-- > 0)
+            var integer = 0;
+
+            var isInteger = true;
+            
+            var decimals = new Int32[maxDecimalPartLength];
+
+            var decimalLength = -1;
+
+            while (dividend > 0 && maxDecimalPartLength-- > 0)
             {
-                if (dividend == 0)
-                {
-                    break;
-                }
+                var remainder = 0;
+
                 if (dividend < divisor)
                 {
                     dividend *= 10;
 
-                    Debug.Write(0);
+                    //Debug.Write(0);
                 }
                 else
                 {
-                    var remainder = dividend / divisor;
+                    remainder = dividend / divisor;
 
-                    Debug.Write(remainder);
+                    //Debug.Write(remainder);
 
                     dividend -= remainder * divisor;
 
                     dividend *= 10;
+                }
+
+                if (isInteger)
+                {
+                    integer = remainder;
+
+                    isInteger = false;
+                }
+                else
+                {
+                    decimals[++decimalLength] = remainder;
+                }
+            }
+
+            Debug.Write(integer);
+
+            if (decimalLength >= 0)
+            {
+                Debug.Write('.');
+
+                for (var i = 0; i <= decimalLength; i++)
+                {
+                    Debug.Write(decimals[i]);
                 }
             }
 
