@@ -11,39 +11,60 @@ namespace Periods
     {
         static void Main(string[] args)
         {
-            for (var i = 1; i < 20; i++)
-            {
-                getPeriod(1, i);
-
-                Debug.WriteLine("");
-            }
-
-            //getPeriod(1, 16);
+            test(1, 9);
+            test(1, 3);
+            test(9, 110);
+            test(7, 12);
+            test(1, 81);
+            test(22, 7);
+            test(1, 17);
+            test(1, 19);
+            test(1, 29);
+            test(1, 97);
 
             Console.ReadLine();
         }
 
-        static String getPeriod(Int32 dividend, Int32 divisor, UInt16 maxPerionLength = 10, UInt16 maxDecimalPartLength = 20)
+        static void test(Int32 dividend, Int32 divisor)
         {
-            Debug.WriteLine(dividend + "/" + divisor + "=" + (Double)dividend / divisor);
-            Debug.Write(dividend + "/" + divisor + "=");
+            Console.WriteLine(dividend + "/" + divisor + "=" + (Double)dividend / divisor);
+
+            Console.Write(dividend + "/" + divisor + "=" + getPeriod(dividend, divisor, 100, 100));
+
+            Console.WriteLine();
+        }
+
+        static String getPeriod(Int32 dividend, Int32 divisor, Int16 maxPerionLength = 10, Int16 maxDecimalPartLength = 7)
+        {
+            var decimalLength = -1;
 
             var integer = 0;
 
             var isInteger = true;
-            
+
             var decimals = new Int32[maxDecimalPartLength];
 
-            var decimalLength = -1;
+            var digitIndexes1 = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
-            while (dividend > 0 && maxDecimalPartLength-- > 0)
+            var digitIndexes2 = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+            var periodLendth = 0;
+
+            var periodStartIndex = -1;
+
+            var periodEndIndex = -1;
+
+            while (dividend > 0 &&
+                   maxDecimalPartLength-- >= 0 &&
+                   periodStartIndex < 0 &&
+                   periodEndIndex < 0)
             {
                 var remainder = 0;
 
                 if (dividend >= divisor)
                 {
                     remainder = dividend / divisor;
-                    
+
                     dividend -= remainder * divisor;
                 }
 
@@ -57,23 +78,72 @@ namespace Periods
                 }
                 else
                 {
-                    decimals[++decimalLength] = remainder;
+                    ++decimalLength;
+
+                    decimals[decimalLength] = remainder;
+
+                    if (digitIndexes1[remainder] >= 0 && digitIndexes2[remainder] >= 0)
+                    {
+                        periodLendth = digitIndexes1[remainder] - digitIndexes2[remainder];
+
+                        if (decimalLength > periodLendth)
+                        {
+                            var equal = true;
+
+                            for (var index = 0; index < periodLendth && equal; index++)
+                            {
+                                if (decimals[decimalLength - index] != decimals[decimalLength - periodLendth - index])
+                                {
+                                    equal = false;
+                                }
+                            }
+
+                            if (equal)
+                            {
+                                periodEndIndex = decimalLength - periodLendth;
+
+                                periodStartIndex = periodEndIndex - periodLendth;
+
+                                periodEndIndex--;
+                            }
+                        }
+                    }
+
+                    digitIndexes2[remainder] = digitIndexes1[remainder];
+
+                    digitIndexes1[remainder] = decimalLength;
                 }
             }
-
-            Debug.Write(integer);
 
             if (decimalLength >= 0)
             {
-                Debug.Write('.');
+                var builder = new StringBuilder(decimalLength);
 
-                for (var i = 0; i <= decimalLength; i++)
+                builder.Append(integer);
+
+                builder.Append('.');
+
+                for (var index = 0; index <= decimalLength; index++)
                 {
-                    Debug.Write(decimals[i]);
+                    if (index == periodStartIndex)
+                    {
+                        builder.Append('(');
+                    }
+
+                    builder.Append(decimals[index]);
+
+                    if (index == periodEndIndex)
+                    {
+                        builder.Append(')');
+
+                        break;
+                    }
                 }
+
+                return builder.ToString();
             }
 
-            return "";
+            return integer.ToString();
         }
     }
 }
