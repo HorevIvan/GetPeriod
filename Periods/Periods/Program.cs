@@ -40,22 +40,14 @@ namespace Periods
             {
                 var remainder = 0;
 
-                if (dividend < divisor)
-                {
-                    dividend *= 10;
-
-                    //Debug.Write(0);
-                }
-                else
+                if (dividend >= divisor)
                 {
                     remainder = dividend / divisor;
-
-                    //Debug.Write(remainder);
-
+                    
                     dividend -= remainder * divisor;
-
-                    dividend *= 10;
                 }
+
+                dividend *= 10;
 
                 if (isInteger)
                 {
