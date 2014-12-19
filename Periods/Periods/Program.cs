@@ -29,20 +29,22 @@ namespace Periods
         {
             Console.WriteLine(dividend + "/" + divisor + "=" + (Double)dividend / divisor);
 
-            Console.Write(dividend + "/" + divisor + "=" + getPeriod(dividend, divisor, 100, 100));
+            Console.WriteLine(dividend + "/" + divisor + "=" + getPeriod(dividend, divisor, 100));
 
             Console.WriteLine();
         }
 
-        static String getPeriod(Int32 dividend, Int32 divisor, Int16 maxPerionLength = 10, Int16 maxDecimalPartLength = 7)
+        static String getPeriod(Int32 dividend, Int32 divisor, Int16 maxLength = 7)
         {
+            var length = maxLength;
+
             var decimalLength = -1;
 
             var integer = 0;
 
             var isInteger = true;
 
-            var decimals = new Int32[maxDecimalPartLength];
+            var decimals = new Int32[maxLength];
 
             var digitIndexes1 = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
@@ -50,12 +52,14 @@ namespace Periods
 
             var periodLendth = 0;
 
+            var maxPeriodLendth = 0;
+
             var periodStartIndex = -1;
 
             var periodEndIndex = -1;
 
             while (dividend > 0 &&
-                   maxDecimalPartLength-- >= 0 &&
+                   length-- >= 0 &&
                    periodStartIndex < 0 &&
                    periodEndIndex < 0)
             {
@@ -82,11 +86,12 @@ namespace Periods
 
                     decimals[decimalLength] = remainder;
 
-                    if (digitIndexes1[remainder] >= 0 && digitIndexes2[remainder] >= 0)
+                    if (digitIndexes1[remainder] >= 0 && 
+                        digitIndexes2[remainder] >= 0)
                     {
                         periodLendth = digitIndexes1[remainder] - digitIndexes2[remainder];
 
-                        if (decimalLength > periodLendth)
+                        if (decimalLength > maxPeriodLendth)
                         {
                             var equal = true;
 
