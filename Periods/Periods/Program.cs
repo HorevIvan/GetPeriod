@@ -56,10 +56,7 @@ namespace Periods
 
             var periodEndIndex = -1;
 
-            while (dividend > 0 &&
-                   length-- >= 0 &&
-                   periodStartIndex < 0 &&
-                   periodEndIndex < 0)
+            while (dividend > 0 && length-- >= 0 && periodStartIndex < 0 && periodEndIndex < 0)
             {
                 var remainder = 0;
 
@@ -84,25 +81,17 @@ namespace Periods
 
                     decimals[decimalLength] = remainder;
 
-                    if (digitIndexes1[remainder] >= 0 &&
-                        digitIndexes2[remainder] >= 0)
+                    if (digitIndexes1[remainder] >= 0 && digitIndexes2[remainder] >= 0)
                     {
-                        var periodLendth = -1;
+                        var periodLendth = 0;
 
                         while (decimalLength / 2 > periodLendth)
                         {
-                            if (periodLendth < 0)
+                            while (decimalLength / 2 > periodLendth)
                             {
-                                periodLendth = digitIndexes1[remainder] - digitIndexes2[remainder];
-                            }
-                            else
-                            {
-                                while (periodLendth < decimalLength / 2)
+                                if (decimals[periodLendth++] == remainder)
                                 {
-                                    if (decimals[periodLendth++] == remainder)
-                                    {
-                                        break;
-                                    }
+                                    break;
                                 }
                             }
 
