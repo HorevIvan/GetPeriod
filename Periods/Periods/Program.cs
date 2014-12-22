@@ -38,36 +38,37 @@ namespace Periods
 
         static String getPeriod(Int32 dividend, Int32 divisor, Int16 maxLength = 200)
         {
-            var length = maxLength;
+            var index = -1; // индекс текущего демятичного знака
 
-            var decimalLength = -1;
+            var integer = 0; // целая часть деления
 
-            var integer = 0;
+            var isInteger = true; // флаг указывает, что идут вычисления целых частей
 
-            var isInteger = true;
+            var decimals = new Int32[maxLength]; // цифры после запятой
 
-            var decimals = new Int32[maxLength];
+            var endIndexes = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }; // предпоследние индексы цифр 0-9
 
-            var digitIndexes1 = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+            var preEndIndexes = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }; // последние индексы цифр 0-9
 
-            var digitIndexes2 = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+            var periodStartIndex = -1; // индекс начала периода
 
-            var periodStartIndex = -1;
+            var periodEndIndex = -1; // индекс окончания периода
 
-            var periodEndIndex = -1;
-
-            while (dividend > 0 && length-- >= 0 && periodStartIndex < 0 && periodEndIndex < 0)
+            while (dividend > 0 && index <= maxLength && periodStartIndex < 0 && periodEndIndex < 0)
             {
                 var remainder = 0;
 
-                if (dividend >= divisor)
+                // получение десятичных знаков
                 {
-                    remainder = dividend / divisor;
+                    if (dividend >= divisor)
+                    {
+                        remainder = dividend / divisor;
 
-                    dividend -= remainder * divisor;
+                        dividend -= remainder * divisor;
+                    }
+
+                    dividend *= 10;
                 }
-
-                dividend *= 10;
 
                 if (isInteger)
                 {
@@ -77,17 +78,17 @@ namespace Periods
                 }
                 else
                 {
-                    ++decimalLength;
+                    ++index;
 
-                    decimals[decimalLength] = remainder;
+                    decimals[index] = remainder;
 
-                    if (digitIndexes1[remainder] >= 0 && digitIndexes2[remainder] >= 0)
+                    if (endIndexes[remainder] >= 0 && preEndIndexes[remainder] >= 0) // признак наличия периода
                     {
                         var periodLendth = 0;
 
-                        while (decimalLength / 2 > periodLendth)
+                        while (index / 2 > periodLendth) // поиск периодов
                         {
-                            while (decimalLength / 2 > periodLendth)
+                            while (index / 2 > periodLendth) // поиск периода
                             {
                                 if (decimals[periodLendth++] == remainder)
                                 {
@@ -95,19 +96,19 @@ namespace Periods
                                 }
                             }
 
-                            var equal = true;
+                            var isEqual = true;
 
-                            for (var index = 0; index < periodLendth && equal; index++)
+                            for (var i = 0; i < periodLendth && isEqual; i++) // проверка периода
                             {
-                                if (decimals[decimalLength - index] != decimals[decimalLength - periodLendth - index])
+                                if (decimals[index - i] != decimals[index - periodLendth - i])
                                 {
-                                    equal = false;
+                                    isEqual = false;
                                 }
                             }
 
-                            if (equal)
+                            if (isEqual) //вычисление размеров периода
                             {
-                                periodEndIndex = decimalLength - periodLendth;
+                                periodEndIndex = index - periodLendth;
 
                                 periodStartIndex = periodEndIndex - periodLendth;
 
@@ -116,34 +117,32 @@ namespace Periods
                         }
                     }
 
-                    digitIndexes2[remainder] = digitIndexes1[remainder];
+                    preEndIndexes[remainder] = endIndexes[remainder];
 
-                    digitIndexes1[remainder] = decimalLength;
+                    endIndexes[remainder] = index;
                 }
             }
 
-            if (decimalLength >= 0)
+            if (index >= 0) // формирование строки вывода
             {
-                var builder = new StringBuilder(decimalLength);
+                var builder = new StringBuilder(index);
 
                 builder.Append(integer);
 
                 builder.Append('.');
 
-                for (var index = 0; index <= decimalLength; index++)
+                for (var i = 0; i <= periodEndIndex; i++)
                 {
-                    if (index == periodStartIndex)
+                    if (i == periodStartIndex)
                     {
                         builder.Append('(');
                     }
 
-                    builder.Append(decimals[index]);
+                    builder.Append(decimals[i]);
 
-                    if (index == periodEndIndex)
+                    if (i == periodEndIndex)
                     {
                         builder.Append(')');
-
-                        break;
                     }
                 }
 
