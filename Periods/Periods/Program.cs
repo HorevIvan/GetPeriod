@@ -86,7 +86,7 @@ namespace Periods
                     {
                         var periodLendth = 0;
 
-                        while (index / 2 > periodLendth) // поиск периодов
+                        while (index / 2 > periodLendth && periodStartIndex < 0 && periodEndIndex < 0) // поиск периодов
                         {
                             while (index / 2 > periodLendth) // поиск периода
                             {
