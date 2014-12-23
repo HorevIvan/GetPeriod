@@ -162,6 +162,14 @@ namespace Periods
 
             var decimals = new Int32[maxLength];
 
+            var lastDigitIndexes = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+            var previousDigitIndexes = new[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+            var periodStartIndex = -1;
+
+            var periodEndIndex = -1;
+
             while (dividend > 0 && index < maxLength)
             {
                 var remainder = 0;
@@ -188,7 +196,29 @@ namespace Periods
                 {
                     decimals[index] = remainder;
 
-                    index++;
+                    // поиск периода
+                    {
+                        if (index > 1)
+                        {
+                            if (index > 1 && decimals[index - 1] == remainder && decimals[index - 2] == remainder)
+                            {
+                                periodStartIndex = index - 2;
+
+                                periodEndIndex = index - 2;
+
+                                index = maxLength;
+                            }
+                        }
+                    }
+
+                    // завершающие операции
+                    {
+                        previousDigitIndexes[remainder] = lastDigitIndexes[remainder];
+
+                        lastDigitIndexes[remainder] = index;
+
+                        index++;
+                    }
                 }
             }
 
@@ -200,9 +230,19 @@ namespace Periods
 
                 builder.Append('.');
 
-                for (var i = 0; i < index; i++)
+                for (var i = 0; i <= periodEndIndex; i++)
                 {
+                    if (i == periodStartIndex)
+                    {
+                        builder.Append('(');
+                    }
+
                     builder.Append(decimals[i]);
+
+                    if (i == periodEndIndex)
+                    {
+                        builder.Append(')');
+                    }
                 }
 
                 return builder.ToString();
