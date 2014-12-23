@@ -31,7 +31,7 @@ namespace Periods
         {
             Console.WriteLine(dividend + "/" + divisor + "=" + (Double)dividend / divisor);
 
-            Console.WriteLine(dividend + "/" + divisor + "=" + getPeriod(dividend, divisor, 200));
+            Console.WriteLine(dividend + "/" + divisor + "=" + getPeriod2(dividend, divisor));
 
             Console.WriteLine();
         }
@@ -144,6 +144,65 @@ namespace Periods
                     {
                         builder.Append(')');
                     }
+                }
+
+                return builder.ToString();
+            }
+
+            return integer.ToString();
+        }
+
+        static String getPeriod2(Int32 dividend, Int32 divisor, Int16 maxLength = 200)
+        {
+            var integer = 0; 
+
+            var isInteger = true; 
+
+            var index = 0;
+
+            var decimals = new Int32[maxLength];
+
+            while (dividend > 0 && index < maxLength)
+            {
+                var remainder = 0;
+
+                // получение десятичных знаков
+                {
+                    if (dividend >= divisor)
+                    {
+                        remainder = dividend / divisor;
+
+                        dividend -= remainder * divisor;
+                    }
+
+                    dividend *= 10;
+                }
+
+                if (isInteger)
+                {
+                    integer = remainder;
+
+                    isInteger = false;
+                }
+                else
+                {
+                    decimals[index] = remainder;
+
+                    index++;
+                }
+            }
+
+            if (index >= 0) // формирование строки вывода
+            {
+                var builder = new StringBuilder(index);
+
+                builder.Append(integer);
+
+                builder.Append('.');
+
+                for (var i = 0; i < index; i++)
+                {
+                    builder.Append(decimals[i]);
                 }
 
                 return builder.ToString();
